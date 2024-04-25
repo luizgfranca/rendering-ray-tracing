@@ -9,6 +9,9 @@ set (
     source/main.cpp
 )
 
-include_directories( source )
+find_package(SDL2 REQUIRED)
+
+include_directories( source ${SDL2_INCLUDE_DIRS} )
 
 add_executable( raytracing ${SOURCES} )
+target_link_libraries( raytracing ${SDL2_LIBRARIES} )
