@@ -8,6 +8,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <sys/types.h>
+#include "color.h"
 
 typedef struct pixel {
     u_int8_t red;
@@ -15,7 +16,7 @@ typedef struct pixel {
     u_int8_t blue;
 } pixel;
 
-void render_test_image(int width, int height, std::function<void(pixel, size_t, size_t)> pixel_render_fn) {
+void render_test_image(int width, int height, std::function<void(Color, size_t, size_t)> pixel_render_fn) {
     // std::cout << "P3\n" << width << " " << height << "\n255\n";
 
     for(int line = 0; line < height; line ++) {
@@ -28,31 +29,19 @@ void render_test_image(int width, int height, std::function<void(pixel, size_t, 
                 blue = 0;
            }
 
-           pixel px = {
-                .red = u_int8_t(255.999 * red),
-                .green = u_int8_t(255.999 * green),
-                .blue = u_int8_t(255.999 * blue)
-           };
-
+            auto color = Color(red, green, blue);
         //    int px_red = int(255.999 * red);
         //    int px_green = int(255.999 * green);
         //    int px_blue = int(255.999 * blue);
 
         //    std::cout << px_red << " " << px_green << " " << px_blue << "\n";
-            pixel_render_fn(px, column, line);
+            pixel_render_fn(color, column, line);
         }
     }
 }
 
-void render_pixel(SDL_Renderer* renderer, size_t x, size_t y, pixel px) {
-    SDL_SetRenderDrawColor(
-        renderer, 
-        px.red, 
-        px.green, 
-        px.blue, 
-        255
-    );
-
+void render_pixel(SDL_Renderer* renderer, size_t x, size_t y, Color color) {
+    color.set_render_color(renderer);
     SDL_RenderDrawPoint(renderer, x, y);
 }
 
@@ -80,14 +69,15 @@ int main() {
     render_test_image(
         800, 
         800, 
-        [&renderer, &window, &event](pixel px, size_t x, size_t y) {
-            if( SDL_PollEvent(&event) && event.type == SDL_QUIT ) {
-                exit(0);
-            }
+        [&renderer, &window, &event](Color color, size_t x, size_t y) {
 
-            render_pixel(renderer, x, y, px);
+            render_pixel(renderer, x, y, color);
 
             if(x == 0 && y % 2 == 0) {
+                if( SDL_PollEvent(&event) && event.type == SDL_QUIT ) {
+                    exit(0);
+                }
+                
                 SDL_UpdateWindowSurface(window);
             }
         }
