@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cmath>
 #include <iostream>
 
@@ -9,6 +11,9 @@ public:
 
     Vec3(double v0, double v1, double v2): data{v0, v1, v2} {};
 
+    double x() const { return data[0]; }
+    double y() const { return data[1]; }
+    double z() const { return data[2]; }
 
     Vec3 operator-() const { 
         return Vec3(-data[0], -data[1], -data[2]);
