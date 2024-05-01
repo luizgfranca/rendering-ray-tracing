@@ -11,7 +11,7 @@ public:
     const Point3& origin() const { return m_origin; }
     const Vec3& direction() const { return m_direction; }
 
-    Point3 at(double t) {
+    Point3 at(double t) const {
         auto result = m_origin + (t * m_direction);
         return *static_cast<Point3*>(&result);
     }

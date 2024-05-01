@@ -27,4 +27,10 @@ public:
             255
         );
     }
+
+    static Color& from(Vec3& v) { return static_cast<Color&>(v); }
+    static Color& from(Vec3 v) { 
+        Vec3* ref = &v;
+        return static_cast<Color&>(*ref); 
+    }
 };

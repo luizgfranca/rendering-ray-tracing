@@ -81,19 +81,22 @@ inline Vec3 operator/(const Vec3& v, double k) {
     return (1/k) * v;
 }
 
-inline double dot(const Vec3& v, const Vec3& u) {
-    return v[0] * u[0] + v[1] * u[1] + v[2] * u[2];
-}
+
+namespace vec_op {
+    inline double dot(const Vec3& v, const Vec3& u) {
+        return v[0] * u[0] + v[1] * u[1] + v[2] * u[2];
+    }
 
 
-inline Vec3 cross(const Vec3& v, const Vec3& u) {
-    return Vec3(
-        v[1] * u[2] - v[2] * u[1],
-        v[0] * u[2] - v[2] * u[0],
-        v[0] * u[1] - v[1] * u[0]
-    );
-}
+    inline Vec3 cross(const Vec3& v, const Vec3& u) {
+        return Vec3(
+            v[1] * u[2] - v[2] * u[1],
+            v[0] * u[2] - v[2] * u[0],
+            v[0] * u[1] - v[1] * u[0]
+        );
+    }
 
-inline Vec3 unit_vector(const Vec3& v) {
-    return v / v.length();
+    inline Vec3 unit_vector(const Vec3& v) {
+        return v / v.length();
+    }
 }

@@ -2,7 +2,6 @@
 #include <SDL_events.h>
 #include <SDL_surface.h>
 #include <SDL_video.h>
-#include <cstddef>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -10,8 +9,10 @@
 #include <sys/types.h>
 #include "color.h"
 #include "point3.h"
+#include "sphere.h"
 #include "vec3.h"
 #include "ray.h"
+#include "sphere.h"
 
 constexpr double ASPECT_RATIO = 16.0 / 9.0;
 constexpr u_int IMAGE_WIDTH = 800;
@@ -35,6 +36,7 @@ const Vec3 VIEWPORT_VERTICAL_VEC(0, -VIEWPORT_HEIGHT, 0);
 const Vec3 PIXEL_DELTA_HORIZONTAL = VIEWPORT_HORIZONTAL_VEC / IMAGE_WIDTH;
 const Vec3 PIXEL_DELTA_VERTICAL = VIEWPORT_VERTICAL_VEC / IMAGE_HEIGHT();
 
+
 Point3 VIEWPORT_UPPER_LEFT = *static_cast<Point3*>(
     new Vec3(
         CAMERA_CENTER 
@@ -51,6 +53,13 @@ const Point3 PIXEL_0X0_PROJECTED_LOCATION = *static_cast<Point3*>(
     )
 );
 
+
+const sphere SIMPLE_SPHERE = {
+    .center = Point3(0, 0, -1),
+    .radius = 0.5
+};
+
+
 auto linear_interpolation(auto start_value, auto end_value, double a) {
     return ((1 - a) * start_value) + (a * end_value);
 }
@@ -60,7 +69,31 @@ Color blank_ray_color(const Ray& ray) {
 }
 
 Color gradient_ray_color(const Ray& ray) {
-    auto unit_direction = unit_vector(ray.direction());
+    auto unit_direction = vec_op::unit_vector(ray.direction());
+    auto a = 0.5 * (unit_direction.y() + 1);
+    auto blended = linear_interpolation(
+        Color(1, 1, 1), 
+        Color(0.2, 0.5, 1), 
+        a
+    );
+
+    return *static_cast<Color*>(&blended);
+}
+
+Color simple_circle_color_fn(const Ray& ray) {
+    auto unit_direction = vec_op::unit_vector(ray.direction());
+    
+    double ray_hit_position = sphere_op::hit_sphere(SIMPLE_SPHERE, ray);
+    if(ray_hit_position > 0) {
+        auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
+        
+        return Color::from(0.5 * Vec3(
+            surface_normal_vector.x() + 1,
+            surface_normal_vector.y() + 1,
+            surface_normal_vector.z() + 1
+        ));
+    }
+    
     auto a = 0.5 * (unit_direction.y() + 1);
     auto blended = linear_interpolation(
         Color(1, 1, 1), 
@@ -142,7 +175,7 @@ int main() {
     render_camera_image(
         window,
         renderer,
-        gradient_ray_color
+        simple_circle_color_fn
     );
 
     u_int counter = 0;
