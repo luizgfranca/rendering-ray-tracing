@@ -54,11 +54,15 @@ const Point3 PIXEL_0X0_PROJECTED_LOCATION = *static_cast<Point3*>(
 );
 
 
-const sphere SIMPLE_SPHERE = {
-    .center = Point3(0, 0, -1),
-    .radius = 0.5
-};
+// const sphere SIMPLE_SPHERE = {
+//     .center = Point3(0, 0, -1),
+//     .radius = 0.5
+// };
 
+const Sphere SIMPLE_SPHERE(
+    Point3(0, 0, -1),
+    0.5
+);
 
 auto linear_interpolation(auto start_value, auto end_value, double a) {
     return ((1 - a) * start_value) + (a * end_value);
@@ -83,8 +87,9 @@ Color gradient_ray_color(const Ray& ray) {
 Color simple_circle_color_fn(const Ray& ray) {
     auto unit_direction = vec_op::unit_vector(ray.direction());
     
-    double ray_hit_position = sphere_op::hit_sphere(SIMPLE_SPHERE, ray);
-    if(ray_hit_position > 0) {
+    auto maybe_ray_hit = SIMPLE_SPHERE.hit(ray, 0, 3);
+    if(maybe_ray_hit.has_value()) {
+        double ray_hit_position = maybe_ray_hit->t;
         auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
         
         return Color::from(0.5 * Vec3(
