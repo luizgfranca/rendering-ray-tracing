@@ -3,6 +3,7 @@
 #include <cmath>
 #include <optional>
 
+#include "hit-record.h"
 #include "hittable.h"
 #include "point3.h"
 #include "ray.h"
@@ -43,11 +44,14 @@ class Sphere : public Hittable {
                 }
             }
 
-            return std::optional<HitRecord>(HitRecord{
-                .t = root,
-                .point = ray.at(root),
-                .normal = (ray.at(root) - m_center) / m_radius
-            });
+            HitRecord hit_record(
+                root, 
+                ray.at(root)
+            );
+
+            hit_record.set_face_normal(ray, diff_origin_center / m_radius);
+
+            return hit_record;
         }
     private:
         Point3 m_center;

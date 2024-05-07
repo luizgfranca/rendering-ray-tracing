@@ -1,15 +1,7 @@
 #pragma once
-#include "point3.h"
 #include "ray.h"
-#include "vec3.h"
 #include <optional>
-
-struct HitRecord {
-    double t;
-    Point3 point;
-    Vec3 normal;
-};
-
+#include "hit-record.h"
 class Hittable {
     public:
         virtual ~Hittable() = default;

@@ -29,7 +29,7 @@ consteval double VIEWPORT_WIDTH() {
 }
 
 const Point3 CAMERA_CENTER(0, 0, 0);
-constexpr double FOCAL_LENGTH = 1;
+constexpr double FOCAL_LENGTH = 0.5;
 
 const Vec3 VIEWPORT_HORIZONTAL_VEC(VIEWPORT_WIDTH(), 0, 0);
 const Vec3 VIEWPORT_VERTICAL_VEC(0, -VIEWPORT_HEIGHT, 0);
@@ -89,9 +89,9 @@ Color simple_circle_color_fn(const Ray& ray) {
     
     auto maybe_ray_hit = SIMPLE_SPHERE.hit(ray, 0, 3);
     if(maybe_ray_hit.has_value()) {
-        double ray_hit_position = maybe_ray_hit->t;
+        double ray_hit_position = maybe_ray_hit->t();
         auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
-        
+
         return Color::from(0.5 * Vec3(
             surface_normal_vector.x() + 1,
             surface_normal_vector.y() + 1,
