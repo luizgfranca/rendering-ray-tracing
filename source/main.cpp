@@ -6,8 +6,11 @@
 #include <functional>
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <memory>
 #include <sys/types.h>
 #include "color.h"
+#include "hittable-list.h"
+#include "hittable.h"
 #include "point3.h"
 #include "sphere.h"
 #include "vec3.h"
@@ -59,10 +62,12 @@ const Point3 PIXEL_0X0_PROJECTED_LOCATION = *static_cast<Point3*>(
 //     .radius = 0.5
 // };
 
-const Sphere SIMPLE_SPHERE(
+const std::shared_ptr<Sphere> SIMPLE_SPHERE = std::make_shared<Sphere>(
     Point3(0, 0, -1),
     0.5
 );
+
+HittableList g_environment = HittableList();
 
 auto linear_interpolation(auto start_value, auto end_value, double a) {
     return ((1 - a) * start_value) + (a * end_value);
@@ -87,7 +92,7 @@ Color gradient_ray_color(const Ray& ray) {
 Color simple_circle_color_fn(const Ray& ray) {
     auto unit_direction = vec_op::unit_vector(ray.direction());
     
-    auto maybe_ray_hit = SIMPLE_SPHERE.hit(ray, 0, 3);
+    auto maybe_ray_hit = g_environment.hit(ray, 0, 3);
     if(maybe_ray_hit.has_value()) {
         double ray_hit_position = maybe_ray_hit->t();
         auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
@@ -164,6 +169,8 @@ int main() {
 
     std::cout << "\n";
     std::cout << "PIXEL DELTA: (" << PIXEL_DELTA_HORIZONTAL << ", " << PIXEL_DELTA_VERTICAL << ")\n";
+
+    g_environment.add(static_cast<std::shared_ptr<Hittable>>(SIMPLE_SPHERE.get()));
 
     window = SDL_CreateWindow(
         "rendering", 
