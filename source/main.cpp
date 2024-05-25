@@ -32,7 +32,7 @@ consteval double VIEWPORT_WIDTH() {
 }
 
 const Point3 CAMERA_CENTER(0, 0, 0);
-constexpr double FOCAL_LENGTH = 0.5;
+constexpr double FOCAL_LENGTH = 1;
 
 const Vec3 VIEWPORT_HORIZONTAL_VEC(VIEWPORT_WIDTH(), 0, 0);
 const Vec3 VIEWPORT_VERTICAL_VEC(0, -VIEWPORT_HEIGHT, 0);
@@ -63,8 +63,12 @@ const Point3 PIXEL_0X0_PROJECTED_LOCATION = *static_cast<Point3*>(
 // };
 
 const std::shared_ptr<Sphere> SIMPLE_SPHERE = std::make_shared<Sphere>(
-    Point3(0, 0, -1),
+    Point3(0, 0, -0.8),
     0.5
+);
+const std::shared_ptr<Sphere> ANOTHER_SPHERE = std::make_shared<Sphere>(
+    Point3(0.2, 0, -0.5),
+    0.25
 );
 
 HittableList g_environment = HittableList();
@@ -171,6 +175,7 @@ int main() {
     std::cout << "PIXEL DELTA: (" << PIXEL_DELTA_HORIZONTAL << ", " << PIXEL_DELTA_VERTICAL << ")\n";
 
     g_environment.add(static_cast<std::shared_ptr<Hittable>>(SIMPLE_SPHERE.get()));
+    g_environment.add(static_cast<std::shared_ptr<Hittable>>(ANOTHER_SPHERE.get()));
 
     window = SDL_CreateWindow(
         "rendering", 

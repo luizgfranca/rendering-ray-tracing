@@ -1,6 +1,7 @@
 #pragma once
+#include "common.h"
+
 #include "ray.h"
-#include <optional>
 #include "hit-record.h"
 class Hittable {
     public:

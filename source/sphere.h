@@ -1,7 +1,5 @@
 #pragma once
-
-#include <cmath>
-#include <optional>
+#include "common.h"
 
 #include "hit-record.h"
 #include "hittable.h"

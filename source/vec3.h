@@ -1,7 +1,5 @@
 #pragma once
-
-#include <cmath>
-#include <iostream>
+#include "common.h"
 
 class Vec3 {
 public:

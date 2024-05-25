@@ -1,9 +1,7 @@
 #pragma once
-
+#include "common.h"
 #include "vec3.h"
-#include <SDL_render.h>
-#include <iostream>
-#include <sys/types.h>
+
 
 constexpr u_int color_value_to_uint(double value) {
     return u_int(255.999 * value);

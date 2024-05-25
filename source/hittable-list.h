@@ -1,10 +1,9 @@
 #pragma once
 
+#include "common.h"
+
 #include "hit-record.h"
 #include "hittable.h"
-#include <memory>
-#include <optional>
-#include <vector>
 
 
 class HittableList : public Hittable {
