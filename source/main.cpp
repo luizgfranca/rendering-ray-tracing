@@ -63,12 +63,12 @@ const Point3 PIXEL_0X0_PROJECTED_LOCATION = *static_cast<Point3*>(
 // };
 
 const std::shared_ptr<Sphere> SIMPLE_SPHERE = std::make_shared<Sphere>(
-    Point3(0, 0, -0.8),
+    Point3(0, 0, -1),
     0.5
 );
-const std::shared_ptr<Sphere> ANOTHER_SPHERE = std::make_shared<Sphere>(
-    Point3(0.2, 0, -0.5),
-    0.25
+const std::shared_ptr<Sphere> PLATFORM_SPHERE = std::make_shared<Sphere>(
+    Point3(0, -100.5, -1),
+    100
 );
 
 HittableList g_environment = HittableList();
@@ -96,7 +96,7 @@ Color gradient_ray_color(const Ray& ray) {
 Color simple_circle_color_fn(const Ray& ray) {
     auto unit_direction = vec_op::unit_vector(ray.direction());
     
-    auto maybe_ray_hit = g_environment.hit(ray, 0, 3);
+    auto maybe_ray_hit = SIMPLE_SPHERE->hit(ray, 0, 3);
     if(maybe_ray_hit.has_value()) {
         double ray_hit_position = maybe_ray_hit->t();
         auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
@@ -108,6 +108,27 @@ Color simple_circle_color_fn(const Ray& ray) {
         ));
     }
     
+    auto a = 0.5 * (unit_direction.y() + 1);
+    auto blended = linear_interpolation(
+        Color(1, 1, 1), 
+        Color(0.2, 0.5, 1), 
+        a
+    );
+
+    return *static_cast<Color*>(&blended);
+}
+
+Color world_color_fn(const Ray& ray) {
+    auto unit_direction = vec_op::unit_vector(ray.direction());
+    
+    auto maybe_ray_hit = g_environment.hit(ray, 0, 3);
+    if(maybe_ray_hit.has_value()) {
+        double ray_hit_position = maybe_ray_hit->t();
+        auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
+
+        return Color::from(0.5 * (surface_normal_vector + Vec3(1,1,1)));
+    }
+
     auto a = 0.5 * (unit_direction.y() + 1);
     auto blended = linear_interpolation(
         Color(1, 1, 1), 
@@ -175,7 +196,7 @@ int main() {
     std::cout << "PIXEL DELTA: (" << PIXEL_DELTA_HORIZONTAL << ", " << PIXEL_DELTA_VERTICAL << ")\n";
 
     g_environment.add(static_cast<std::shared_ptr<Hittable>>(SIMPLE_SPHERE.get()));
-    g_environment.add(static_cast<std::shared_ptr<Hittable>>(ANOTHER_SPHERE.get()));
+    g_environment.add(static_cast<std::shared_ptr<Hittable>>(PLATFORM_SPHERE.get()));
 
     window = SDL_CreateWindow(
         "rendering", 
@@ -192,7 +213,7 @@ int main() {
     render_camera_image(
         window,
         renderer,
-        simple_circle_color_fn
+        world_color_fn
     );
 
     u_int counter = 0;
