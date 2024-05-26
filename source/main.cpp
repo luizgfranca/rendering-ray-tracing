@@ -2,6 +2,7 @@
 #include <SDL_events.h>
 #include <SDL_surface.h>
 #include <SDL_video.h>
+#include <cmath>
 #include <cstdlib>
 #include <functional>
 #include <iostream>
@@ -130,12 +131,10 @@ Color simple_circle_color_fn(const Ray& ray) {
 Color world_color_fn(const Ray& ray) {
     auto unit_direction = vec_op::unit_vector(ray.direction());
     
-    auto maybe_ray_hit = g_environment.hit(ray, 0, 3);
+    auto maybe_ray_hit = g_environment.hit(ray, 0, INFINITY);
     if(maybe_ray_hit.has_value()) {
-        double ray_hit_position = maybe_ray_hit->t();
-        auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
-
-        return Color::from(0.5 * (surface_normal_vector + Vec3(1,1,1)));
+        auto hit = maybe_ray_hit.value();
+        return Color::from(0.5 * (hit.normal() + Vec3(1,1,1)));
     }
 
     auto a = 0.5 * (unit_direction.y() + 1);
@@ -206,7 +205,7 @@ int main() {
 
     g_environment.add(static_cast<std::shared_ptr<Hittable>>(SIMPLE_SPHERE.get()));
     g_environment.add(static_cast<std::shared_ptr<Hittable>>(ANOTHER_SPHERE.get()));
-    // g_environment.add(static_cast<std::shared_ptr<Hittable>>(PLATFORM_SPHERE.get()));
+    g_environment.add(static_cast<std::shared_ptr<Hittable>>(PLATFORM_SPHERE.get()));
 
     window = SDL_CreateWindow(
         "rendering", 

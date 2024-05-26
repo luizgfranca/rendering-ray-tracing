@@ -47,7 +47,7 @@ class Sphere : public Hittable {
                 ray.at(root)
             );
 
-            hit_record.set_face_normal(ray, diff_origin_center / m_radius);
+            hit_record.set_face_normal(ray, (ray.at(root) - m_center) / m_radius);
 
             return hit_record;
         }
