@@ -66,10 +66,19 @@ const std::shared_ptr<Sphere> SIMPLE_SPHERE = std::make_shared<Sphere>(
     Point3(0, 0, -1),
     0.5
 );
+
+const std::shared_ptr<Sphere> ANOTHER_SPHERE = std::make_shared<Sphere>(
+    Point3(0.2, 0, -0.8),
+    0.5
+);
+
+
 const std::shared_ptr<Sphere> PLATFORM_SPHERE = std::make_shared<Sphere>(
     Point3(0, -100.5, -1),
     100
 );
+
+
 
 HittableList g_environment = HittableList();
 
@@ -196,7 +205,8 @@ int main() {
     std::cout << "PIXEL DELTA: (" << PIXEL_DELTA_HORIZONTAL << ", " << PIXEL_DELTA_VERTICAL << ")\n";
 
     g_environment.add(static_cast<std::shared_ptr<Hittable>>(SIMPLE_SPHERE.get()));
-    g_environment.add(static_cast<std::shared_ptr<Hittable>>(PLATFORM_SPHERE.get()));
+    g_environment.add(static_cast<std::shared_ptr<Hittable>>(ANOTHER_SPHERE.get()));
+    // g_environment.add(static_cast<std::shared_ptr<Hittable>>(PLATFORM_SPHERE.get()));
 
     window = SDL_CreateWindow(
         "rendering", 

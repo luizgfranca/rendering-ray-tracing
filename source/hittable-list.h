@@ -28,7 +28,6 @@ class HittableList : public Hittable {
                     has_hit_anything = true;
                     closest_hit_t = maybe_hit->t();
                     result = maybe_hit;
-                    break;
                 }
             }
 
