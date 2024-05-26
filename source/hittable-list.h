@@ -4,6 +4,7 @@
 
 #include "hit-record.h"
 #include "hittable.h"
+#include "interval.h"
 
 
 class HittableList : public Hittable {
@@ -15,18 +16,16 @@ class HittableList : public Hittable {
 
         std::optional<HitRecord> hit(
             const Ray& ray,
-            double ray_tmin,
-            double ray_tmax
+            Interval& interval
         ) const override{
             std::optional<HitRecord> result = std::nullopt;
             bool has_hit_anything = false;
-            double closest_hit_t = ray_tmax;
 
             for(const auto& object : m_objects) {
-                auto maybe_hit = object->hit(ray, ray_tmin, closest_hit_t);
+                auto maybe_hit = object->hit(ray, interval);
                 if(maybe_hit.has_value()) {
                     has_hit_anything = true;
-                    closest_hit_t = maybe_hit->t();
+                    interval.set_max(maybe_hit->t());
                     result = maybe_hit;
                 }
             }

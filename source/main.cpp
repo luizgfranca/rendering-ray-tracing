@@ -12,6 +12,7 @@
 #include "color.h"
 #include "hittable-list.h"
 #include "hittable.h"
+#include "interval.h"
 #include "point3.h"
 #include "sphere.h"
 #include "vec3.h"
@@ -106,7 +107,8 @@ Color gradient_ray_color(const Ray& ray) {
 Color simple_circle_color_fn(const Ray& ray) {
     auto unit_direction = vec_op::unit_vector(ray.direction());
     
-    auto maybe_ray_hit = SIMPLE_SPHERE->hit(ray, 0, 3);
+    auto hit_interval = Interval(0, 3);
+    auto maybe_ray_hit = SIMPLE_SPHERE->hit(ray, hit_interval);
     if(maybe_ray_hit.has_value()) {
         double ray_hit_position = maybe_ray_hit->t();
         auto surface_normal_vector = vec_op::unit_vector(ray.at(ray_hit_position) - Vec3(0, 0, -1));
@@ -131,7 +133,8 @@ Color simple_circle_color_fn(const Ray& ray) {
 Color world_color_fn(const Ray& ray) {
     auto unit_direction = vec_op::unit_vector(ray.direction());
     
-    auto maybe_ray_hit = g_environment.hit(ray, 0, INFINITY);
+    auto hit_interval = Interval(0, INFINITY);
+    auto maybe_ray_hit = g_environment.hit(ray, hit_interval);
     if(maybe_ray_hit.has_value()) {
         auto hit = maybe_ray_hit.value();
         return Color::from(0.5 * (hit.normal() + Vec3(1,1,1)));

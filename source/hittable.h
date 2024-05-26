@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 
+#include "interval.h"
 #include "ray.h"
 #include "hit-record.h"
 class Hittable {
@@ -8,7 +9,6 @@ class Hittable {
         virtual ~Hittable() = default;
         virtual std::optional<HitRecord> hit(
             const Ray& ray,
-            double ray_tmin,
-            double ray_tmax
+            Interval& t_interval
         ) const = 0;
 };

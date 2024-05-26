@@ -3,6 +3,7 @@
 
 #include "hit-record.h"
 #include "hittable.h"
+#include "interval.h"
 #include "point3.h"
 #include "ray.h"
 #include "vec3.h"
@@ -13,8 +14,7 @@ class Sphere : public Hittable {
 
         std::optional<HitRecord> hit(
             const Ray& ray,
-            double ray_tmin,
-            double ray_tmax
+            Interval& interval
         ) const override{
             auto diff_origin_center = m_center - ray.origin();
             
@@ -35,9 +35,10 @@ class Sphere : public Hittable {
             
             auto discriminant_sqrt = std::sqrt(discriminant );
             auto root = ( h - discriminant_sqrt ) / a;
-            if(root <= ray_tmin || root >= ray_tmax) {
+
+            if(!interval.contains(root)) {
                 root = ( h + discriminant_sqrt ) / a;
-                if(root <= ray_tmin || root >= ray_tmax) {
+                if(!interval.contains(root)) {
                     return std::nullopt;
                 }
             }
