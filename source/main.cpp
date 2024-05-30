@@ -84,10 +84,6 @@ const std::shared_ptr<Sphere> PLATFORM_SPHERE = std::make_shared<Sphere>(
 
 HittableList g_environment = HittableList();
 
-auto linear_interpolation(auto start_value, auto end_value, double a) {
-    return ((1 - a) * start_value) + (a * end_value);
-}
-
 Color blank_ray_color(const Ray& ray) {
     return Color();
 }
