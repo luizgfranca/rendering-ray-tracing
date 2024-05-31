@@ -14,11 +14,6 @@
 #include <memory>
 #include <vector>
 
-#include "color.h"
-#include "ray.h"
-#include "hittable.h"
-#include "interval.h"
-
 constexpr double PI = 3.1415926535897932385;
 
 

@@ -1,36 +1,43 @@
 #pragma once
-#include "color.h"
 #include "common.h"
+#include "color.h"
 #include "point3.h"
 #include "ray.h"
 #include "vec3.h"
-#include <cmath>
-#include <sys/types.h>
-
+#include "hittable.h"
+#include <SDL.h>
+#include <SDL_events.h>
+#include <SDL_surface.h>
+#include <cstdlib>
 
 class Camera {
     public:
         Camera(
-            SDL_Window* window,
-            SDL_Renderer* renderer,
             u_int image_width, 
             double aspect_ratio, 
             double viewport_height,
             double focal_length,
             const Point3& camera_center
         ):
-            m_window(window),
-            m_renderer(renderer),
             m_image_width(image_width),
             m_aspect_ratio(aspect_ratio),
             m_viewport_height(viewport_height),
             m_focal_length(focal_length),
             m_camera_center(camera_center)
         {
-            initialize();
+            initialize_properties();
+            initialize_sdl();
         }
 
-        void render(const Hittable& environment) const {
+        ~Camera() {
+            free(m_window);
+            free(m_surface);
+            free(m_renderer);
+
+            SDL_Quit();
+        }
+
+        void render_and_wait(const Hittable& environment) const {
             for(u_int image_y = 0; image_y < m_image_height; image_y ++) {
                 for(u_int image_x = 0; image_x < m_image_width; image_x ++) {
                     auto projected_pixel = m_0x0_pixel_location 
@@ -46,12 +53,28 @@ class Camera {
                     render_pixel(image_x, image_y, color);
                 }
             }
+
+            u_int counter = 0;
+            SDL_Event e;
+            while (true) {
+                if(counter % 1000) {
+                    SDL_UpdateWindowSurface(m_window);
+                }
+
+                if( SDL_PollEvent(&e) && e.type == SDL_QUIT ) {
+                    return;
+                }       
+
+                counter ++;
+            }
         }
 
     private:
+        // SDL stuff
         SDL_Window* m_window;
+        SDL_Surface* m_surface;
         SDL_Renderer* m_renderer;
-
+        
         // provided
         double m_aspect_ratio;
         u_int m_image_width;
@@ -72,7 +95,7 @@ class Camera {
         
         Point3 m_0x0_pixel_location;
 
-        void initialize() {
+        void initialize_properties() {
             auto height = u_int(m_image_width / m_aspect_ratio);
             m_image_height = height < 1 ? 1 : height;
             
@@ -99,6 +122,22 @@ class Camera {
                     + (0.5 * (m_horizontal_pixel_delta + m_vertical_pixel_delta))
                 )
             );
+        }
+
+        void initialize_sdl() {
+            SDL_Init(SDL_INIT_EVERYTHING);
+
+            m_window = SDL_CreateWindow(
+                "rendering", 
+                SDL_WINDOWPOS_UNDEFINED, 
+                SDL_WINDOWPOS_UNDEFINED, 
+                m_image_width, 
+                m_image_height, 
+                SDL_WINDOW_SHOWN
+            );      
+
+            m_surface = SDL_GetWindowSurface(m_window);
+            m_renderer = SDL_CreateSoftwareRenderer(m_surface);
         }
 
         Color get_calculated_ray_color(const Ray& ray, const Hittable& environment) const {
