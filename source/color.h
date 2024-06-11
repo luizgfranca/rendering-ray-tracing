@@ -11,6 +11,7 @@ class Color : public Vec3 {
 public:
     Color(): Vec3() {};
     Color(double red, double green, double blue): Vec3(red, green, blue) {};
+    Color(Vec3& v): Vec3(v) {};
     
     u_int red() const { return color_value_to_uint(data[0]); }
     u_int green() const { return color_value_to_uint(data[1]); }

@@ -9,6 +9,7 @@
 #include <SDL_events.h>
 #include <SDL_surface.h>
 #include <cstdlib>
+#include <sys/types.h>
 
 class Camera {
     public:
@@ -16,12 +17,14 @@ class Camera {
             u_int image_width, 
             double aspect_ratio, 
             double viewport_height,
+            double samples_per_pixel,
             double focal_length,
             const Point3& camera_center
         ):
             m_image_width(image_width),
             m_aspect_ratio(aspect_ratio),
             m_viewport_height(viewport_height),
+            m_samples_per_pixel(samples_per_pixel),
             m_focal_length(focal_length),
             m_camera_center(camera_center)
         {
@@ -40,17 +43,25 @@ class Camera {
         void render_and_wait(const Hittable& environment) const {
             for(u_int image_y = 0; image_y < m_image_height; image_y ++) {
                 for(u_int image_x = 0; image_x < m_image_width; image_x ++) {
-                    auto projected_pixel = m_0x0_pixel_location 
+                    auto projected_center = m_0x0_pixel_location 
                         + (image_x * m_horizontal_pixel_delta)
                         + (image_y * m_vertical_pixel_delta);
+                    
+                    Vec3 sample_total;
+                    for(auto sample = 0; sample < m_samples_per_pixel; sample ++) {
+                        auto ray = get_random_ray_close_to_projection(projected_center);
 
-                    auto ray_direction = projected_pixel - m_camera_center;
-                    auto color = get_calculated_ray_color(
-                        Ray(m_camera_center, ray_direction), 
-                        environment
-                    );
+                        auto sample_color = get_calculated_ray_color(
+                            ray, 
+                            environment
+                        );
 
-                    render_pixel(image_x, image_y, color);
+                        sample_total += sample_color;
+                    }
+
+                    sample_total = sample_total / m_samples_per_pixel;
+                    auto calculated_color = Color(sample_total);
+                    render_pixel(image_x, image_y, calculated_color);
                 }
             }
 
@@ -79,6 +90,7 @@ class Camera {
         double m_aspect_ratio;
         u_int m_image_width;
         double m_viewport_height;
+        const u_int m_samples_per_pixel;
         double m_focal_length;
         const Point3& m_camera_center;
 
@@ -172,5 +184,18 @@ class Camera {
                 
                 SDL_UpdateWindowSurface(m_window);
             }
+        }
+
+        Ray get_random_ray_close_to_projection(Vec3 deviation_center) const {
+            auto max_horizontal_deviation = m_horizontal_pixel_delta * 0.5;
+            auto max_vertical_deviation = m_vertical_pixel_delta * 0.5;
+            
+            auto random_deviation = (m_horizontal_pixel_delta * get_random(-0.5, 0.5))
+                + (m_vertical_pixel_delta * get_random(-0.5, 0.5));
+            
+            return Ray(
+                m_camera_center,
+                (deviation_center + random_deviation) - m_camera_center
+            );
         }
 };

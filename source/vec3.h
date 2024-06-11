@@ -22,8 +22,8 @@ public:
 
     Vec3& operator+=(const Vec3& v) {
         data[0] += v[0];
-        data[0] += v[1];
-        data[0] += v[2];
+        data[1] += v[1];
+        data[2] += v[2];
 
         return *this;
     }

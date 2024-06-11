@@ -20,6 +20,7 @@
 constexpr double ASPECT_RATIO = 16.0 / 9.0;
 constexpr u_int IMAGE_WIDTH = 800;
 constexpr double VIEWPORT_HEIGHT = 2;
+constexpr u_int SAMPLES_PER_PIXEL = 10;
 
 const Point3 CAMERA_CENTER(0, 0, 0);
 constexpr double FOCAL_LENGTH = 1;
@@ -54,6 +55,7 @@ int main() {
         IMAGE_WIDTH,
         ASPECT_RATIO,
         VIEWPORT_HEIGHT,
+        SAMPLES_PER_PIXEL,
         FOCAL_LENGTH,
         CAMERA_CENTER
     );
