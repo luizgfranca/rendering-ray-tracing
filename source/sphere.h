@@ -18,13 +18,13 @@ class Sphere : public Hittable {
         ) const override{
             auto diff_origin_center = m_center - ray.origin();
             
-            auto a = vec_op::dot(ray.direction(), ray.direction());
+            auto a = Vec3::dot(ray.direction(), ray.direction());
             
-            // auto b = -2 * vec_op::dot(ray.direction(), diff_origin_center);
+            // auto b = -2 * Vec3::dot(ray.direction(), diff_origin_center);
             // b = -2h -> h = b / -2 -> d * (C - Q)
-            auto h = vec_op::dot(ray.direction(), diff_origin_center);
+            auto h = Vec3::dot(ray.direction(), diff_origin_center);
 
-            auto c = vec_op::dot(diff_origin_center, diff_origin_center) - (m_radius * m_radius);
+            auto c = Vec3::dot(diff_origin_center, diff_origin_center) - (m_radius * m_radius);
 
             // auto discriminator = (b * b) - (4 * a * c);
             // h = -2b so

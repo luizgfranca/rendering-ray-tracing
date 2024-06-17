@@ -40,13 +40,20 @@ public:
         return *this *= 1/k;
     }
 
-    double length_squared() const {
-        return data[0]*data[0] + data[1]*data[1] + data[2]*data[2];
-    }
+    double length_squared() const;
 
-    double length() const {
-        return std::sqrt(length_squared());
-    }
+    double length() const;
+
+    // operations
+    static double dot(const Vec3& v, const Vec3& u);
+    static Vec3 cross(const Vec3& v, const Vec3& u);
+    static Vec3 unit_vector(const Vec3& v);
+
+    // generators
+    static Vec3 random();
+    static Vec3 random(double min, double max);
+    static Vec3 unit_sphere_random();
+    static Vec3 unit_random();
 };
 
 
@@ -77,24 +84,4 @@ inline Vec3 operator*(const Vec3& v, double k) {
 
 inline Vec3 operator/(const Vec3& v, double k) {
     return (1/k) * v;
-}
-
-
-namespace vec_op {
-    inline double dot(const Vec3& v, const Vec3& u) {
-        return v[0] * u[0] + v[1] * u[1] + v[2] * u[2];
-    }
-
-
-    inline Vec3 cross(const Vec3& v, const Vec3& u) {
-        return Vec3(
-            v[1] * u[2] - v[2] * u[1],
-            v[0] * u[2] - v[2] * u[0],
-            v[0] * u[1] - v[1] * u[0]
-        );
-    }
-
-    inline Vec3 unit_vector(const Vec3& v) {
-        return v / v.length();
-    }
 }

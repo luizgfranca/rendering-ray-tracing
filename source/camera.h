@@ -153,7 +153,7 @@ class Camera {
         }
 
         Color get_calculated_ray_color(const Ray& ray, const Hittable& environment) const {
-            auto unit_direction = vec_op::unit_vector(ray.direction());
+            auto unit_direction = Vec3::unit_vector(ray.direction());
             
             auto hit_interval = Interval(0, INFINITY);
             auto maybe_ray_hit = environment.hit(ray, hit_interval);

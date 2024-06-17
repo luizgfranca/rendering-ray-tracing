@@ -7,6 +7,7 @@ set ( CMAKE_CXX_STANDARD 20 )
 set ( 
     SOURCES
     source/main.cpp
+    source/vec3.cpp
 )
 
 find_package(SDL2 REQUIRED)
