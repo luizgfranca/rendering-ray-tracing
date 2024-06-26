@@ -25,7 +25,7 @@ class HitRecord {
     const Vec3& normal() const { return m_normal; } 
 
     void set_face_normal(const Ray& ray, const Vec3& outward_normal) {
-        m_front_face = Vec3::dot(ray.direction(), outward_normal);
+        m_front_face = Vec3::dot(ray.direction(), outward_normal) < 0;
         m_normal = m_front_face ? outward_normal : -outward_normal;
     }
 

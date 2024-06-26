@@ -48,7 +48,6 @@ HittableList g_environment = HittableList();
 
 int main() {
     g_environment.add(static_cast<std::shared_ptr<Hittable>>(SIMPLE_SPHERE.get()));
-    g_environment.add(static_cast<std::shared_ptr<Hittable>>(ANOTHER_SPHERE.get()));
     g_environment.add(static_cast<std::shared_ptr<Hittable>>(PLATFORM_SPHERE.get()));
 
     auto camera = new Camera(

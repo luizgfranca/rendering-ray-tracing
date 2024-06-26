@@ -54,6 +54,7 @@ public:
     static Vec3 random(double min, double max);
     static Vec3 unit_sphere_random();
     static Vec3 unit_random();
+    static Vec3 unit_random_in_another_vector_hemisphere(const Vec3& another_vector);
 };
 
 

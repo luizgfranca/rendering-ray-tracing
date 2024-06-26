@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdlib>
+#include <ctime>
 #include <sys/types.h>
 
 
@@ -22,10 +23,5 @@ auto linear_interpolation(auto start_value, auto end_value, double a) {
     return ((1 - a) * start_value) + (a * end_value);
 }
 
-inline double get_random() {
-    return double(rand()) / double(RAND_MAX);
-}
-
-inline double get_random(double min, double max) {
-    return min + (get_random() * (max - min));
-}
+double get_random();
+double get_random(double min, double max);

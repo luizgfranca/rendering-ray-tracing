@@ -16,7 +16,7 @@ class HittableList : public Hittable {
 
         std::optional<HitRecord> hit(
             const Ray& ray,
-            Interval& interval
+            Interval interval
         ) const override{
             std::optional<HitRecord> result = std::nullopt;
             bool has_hit_anything = false;

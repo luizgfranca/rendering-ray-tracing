@@ -8,6 +8,7 @@ set (
     SOURCES
     source/main.cpp
     source/vec3.cpp
+    source/common.cpp
 )
 
 find_package(SDL2 REQUIRED)

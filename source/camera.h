@@ -11,6 +11,8 @@
 #include <cstdlib>
 #include <sys/types.h>
 
+constexpr u_int MAX_DEPTH = 5;
+
 class Camera {
     public:
         Camera(
@@ -152,14 +154,19 @@ class Camera {
             m_renderer = SDL_CreateSoftwareRenderer(m_surface);
         }
 
-        Color get_calculated_ray_color(const Ray& ray, const Hittable& environment) const {
+        Color get_calculated_ray_color(const Ray& ray, const Hittable& environment, u_int depth = 0) const {
             auto unit_direction = Vec3::unit_vector(ray.direction());
             
             auto hit_interval = Interval(0, INFINITY);
             auto maybe_ray_hit = environment.hit(ray, hit_interval);
-            if(maybe_ray_hit.has_value()) {
+            if(maybe_ray_hit.has_value() && depth <= MAX_DEPTH) {
                 auto hit = maybe_ray_hit.value();
-                return Color::from(0.5 * (hit.normal() + Vec3(1,1,1)));
+
+                auto reflection_direction = Vec3::unit_random_in_another_vector_hemisphere(hit.normal());
+                auto reflection_ray = Ray(hit.point(), reflection_direction);
+
+                auto reflection_color = get_calculated_ray_color(reflection_ray, environment, ++depth);
+                return Color::from(0.7 * reflection_color);
             }
 
             auto a = 0.5 * (unit_direction.y() + 1);

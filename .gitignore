@@ -1,2 +1,5 @@
 build
 .cache
+report*
+valgrind*
+vgcore*

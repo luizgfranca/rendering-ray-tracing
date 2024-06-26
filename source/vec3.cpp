@@ -8,14 +8,14 @@ double Vec3::length() const {
 }
 
 double Vec3::dot(const Vec3& v, const Vec3& u) {
-    return v[0] * u[0] + v[1] * u[1] + v[2] * u[2];
+    return v.data[0] * u.data[0] + v.data[1] * u.data[1] + v.data[2] * u.data[2];
 }
 
 Vec3 Vec3::cross(const Vec3& v, const Vec3& u) {
     return Vec3(
-        v[1] * u[2] - v[2] * u[1],
-        v[0] * u[2] - v[2] * u[0],
-        v[0] * u[1] - v[1] * u[0]
+        v.data[1] * u.data[2] - v.data[2] * u.data[1],
+        v.data[0] * u.data[2] - v.data[2] * u.data[0],
+        v.data[0] * u.data[1] - v.data[1] * u.data[0]
     );
 }
 
@@ -45,4 +45,9 @@ Vec3 Vec3::unit_sphere_random() {
 
 Vec3 Vec3::unit_random() {
     return Vec3::unit_vector(unit_sphere_random());
+}
+
+Vec3 Vec3::unit_random_in_another_vector_hemisphere(const Vec3 &another_vector) {
+    auto random = Vec3::unit_random();
+    return (Vec3::dot(random, another_vector) > 0) ? random : -random;
 }

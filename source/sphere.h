@@ -14,22 +14,22 @@ class Sphere : public Hittable {
 
         std::optional<HitRecord> hit(
             const Ray& ray,
-            Interval& interval
+            Interval interval
         ) const override{
             auto diff_origin_center = m_center - ray.origin();
             
-            auto a = Vec3::dot(ray.direction(), ray.direction());
+            auto a = ray.direction().length_squared();
             
             // auto b = -2 * Vec3::dot(ray.direction(), diff_origin_center);
             // b = -2h -> h = b / -2 -> d * (C - Q)
             auto h = Vec3::dot(ray.direction(), diff_origin_center);
 
-            auto c = Vec3::dot(diff_origin_center, diff_origin_center) - (m_radius * m_radius);
+            auto c = diff_origin_center.length_squared() - (m_radius * m_radius);
 
             // auto discriminator = (b * b) - (4 * a * c);
             // h = -2b so
             auto discriminant = (h * h) - (a * c);
-            if(discriminant < 0) {
+            if(discriminant <= 0) {
                 return std::nullopt;
             }
             
@@ -48,7 +48,7 @@ class Sphere : public Hittable {
                 ray.at(root)
             );
 
-            hit_record.set_face_normal(ray, (ray.at(root) - m_center) / m_radius);
+            hit_record.set_face_normal(ray, (hit_record.point() - m_center) / m_radius);
 
             return hit_record;
         }
