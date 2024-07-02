@@ -11,8 +11,6 @@
 #include <cstdlib>
 #include <sys/types.h>
 
-constexpr u_int MAX_DEPTH = 5;
-
 class Camera {
     public:
         Camera(
@@ -55,7 +53,8 @@ class Camera {
 
                         auto sample_color = get_calculated_ray_color(
                             ray, 
-                            environment
+                            environment,
+                            max_depth
                         );
 
                         sample_total += sample_color;
@@ -109,6 +108,8 @@ class Camera {
         
         Point3 m_0x0_pixel_location;
 
+        u_int max_depth = 10;
+
         void initialize_properties() {
             auto height = u_int(m_image_width / m_aspect_ratio);
             m_image_height = height < 1 ? 1 : height;
@@ -154,25 +155,29 @@ class Camera {
             m_renderer = SDL_CreateSoftwareRenderer(m_surface);
         }
 
-        Color get_calculated_ray_color(const Ray& ray, const Hittable& environment, u_int depth = 0) const {
+        Color get_calculated_ray_color(const Ray& ray, const Hittable& environment, u_int hit_tries_remaining) const {
+            if(hit_tries_remaining == 0) {
+                return Color(0, 0, 0);
+            }
+            
             auto unit_direction = Vec3::unit_vector(ray.direction());
             
             auto hit_interval = Interval(0, INFINITY);
             auto maybe_ray_hit = environment.hit(ray, hit_interval);
-            if(maybe_ray_hit.has_value() && depth <= MAX_DEPTH) {
+            if(maybe_ray_hit.has_value()) {
                 auto hit = maybe_ray_hit.value();
 
                 auto reflection_direction = Vec3::unit_random_in_another_vector_hemisphere(hit.normal());
                 auto reflection_ray = Ray(hit.point(), reflection_direction);
 
-                auto reflection_color = get_calculated_ray_color(reflection_ray, environment, ++depth);
-                return Color::from(0.7 * reflection_color);
+                auto reflection_color = get_calculated_ray_color(reflection_ray, environment, hit_tries_remaining - 1);
+                return Color::from(0.8 * reflection_color);
             }
 
             auto a = 0.5 * (unit_direction.y() + 1);
             auto blended = linear_interpolation(
                 Color(1, 1, 1), 
-                Color(0.2, 0.5, 1), 
+                Color(0.5, 0.7, 1), 
                 a
             );
 
