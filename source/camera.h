@@ -162,7 +162,7 @@ class Camera {
             
             auto unit_direction = Vec3::unit_vector(ray.direction());
             
-            auto hit_interval = Interval(0, INFINITY);
+            auto hit_interval = Interval(0.00001, INFINITY);
             auto maybe_ray_hit = environment.hit(ray, hit_interval);
             if(maybe_ray_hit.has_value()) {
                 auto hit = maybe_ray_hit.value();
@@ -171,7 +171,7 @@ class Camera {
                 auto reflection_ray = Ray(hit.point(), reflection_direction);
 
                 auto reflection_color = get_calculated_ray_color(reflection_ray, environment, hit_tries_remaining - 1);
-                return Color::from(0.8 * reflection_color);
+                return Color::from(0.5 * reflection_color);
             }
 
             auto a = 0.5 * (unit_direction.y() + 1);
