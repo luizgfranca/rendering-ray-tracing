@@ -167,7 +167,7 @@ class Camera {
             if(maybe_ray_hit.has_value()) {
                 auto hit = maybe_ray_hit.value();
 
-                auto reflection_direction = Vec3::unit_random_in_another_vector_hemisphere(hit.normal());
+                auto reflection_direction = hit.normal() + Vec3::unit_random();
                 auto reflection_ray = Ray(hit.point(), reflection_direction);
 
                 auto reflection_color = get_calculated_ray_color(reflection_ray, environment, hit_tries_remaining - 1);
