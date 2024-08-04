@@ -7,6 +7,7 @@
 #include "point3.h"
 #include "ray.h"
 #include "vec3.h"
+#include <memory>
 
 class Sphere : public Hittable {
     public:
@@ -45,7 +46,8 @@ class Sphere : public Hittable {
 
             HitRecord hit_record(
                 root, 
-                ray.at(root)
+                ray.at(root),
+                m_material
             );
 
             hit_record.set_face_normal(ray, (hit_record.point() - m_center) / m_radius);
@@ -55,4 +57,5 @@ class Sphere : public Hittable {
     private:
         Point3 m_center;
         double m_radius;
+        std::shared_ptr<Material> m_material;
 };
