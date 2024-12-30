@@ -167,6 +167,17 @@ class Camera {
             if(maybe_ray_hit.has_value()) {
                 auto hit = maybe_ray_hit.value();
 
+                auto maybe_scattering = hit.material()->scatter(ray, hit);
+                if(maybe_scattering.has_value()) {
+                    auto scattering = maybe_scattering.value();
+
+                    auto scattered_ray = scattering.scattered;
+                    auto attenuation = scattering.attenuation;
+
+                    auto reflection_color = get_calculated_ray_color(scattered_ray, environment, hit_tries_remaining - 1);
+                    return Color::from(attenuation * reflection_color);    
+                }
+
                 auto reflection_direction = hit.normal() + Vec3::unit_random();
                 auto reflection_ray = Ray(hit.point(), reflection_direction);
 

@@ -51,3 +51,7 @@ Vec3 Vec3::unit_random_in_another_vector_hemisphere(const Vec3 &another_vector) 
     auto random = Vec3::unit_random();
     return (Vec3::dot(random, another_vector) > 0) ? random : -random;
 }
+
+Vec3 Vec3::reflect(Vec3 vector, Vec3 surface_normal) {
+    return vector - (2 * Vec3::dot(vector, surface_normal) * surface_normal);
+}

@@ -55,6 +55,7 @@ public:
     static Vec3 unit_sphere_random();
     static Vec3 unit_random();
     static Vec3 unit_random_in_another_vector_hemisphere(const Vec3& another_vector);
+    static Vec3 reflect(Vec3 vector, Vec3 surface_normal);
 };
 
 

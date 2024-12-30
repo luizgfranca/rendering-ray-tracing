@@ -3,8 +3,11 @@
 #include "common.h"
 #include "color.h"
 #include "hit-record.h"
+#include "hit-record.h"
 #include "ray.h"
 #include <optional>
+
+class HitRecord;
 
 typedef struct scattering {
     Color attenuation;

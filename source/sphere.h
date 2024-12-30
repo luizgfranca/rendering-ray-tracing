@@ -11,7 +11,10 @@
 
 class Sphere : public Hittable {
     public:
-        Sphere(Point3 center, double radius): m_center(center), m_radius(radius) {};
+        Sphere(Point3 center, double radius, std::shared_ptr<Material> material): 
+            m_center(center), 
+            m_radius(radius),
+            m_material(material) {};
 
         std::optional<HitRecord> hit(
             const Ray& ray,

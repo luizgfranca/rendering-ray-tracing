@@ -4,6 +4,7 @@
 #include "ray.h"
 #include "vec3.h"
 #include <memory>
+#include "material.h"
 
 class Material;
 
